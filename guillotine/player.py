@@ -14,28 +14,11 @@ class Player(object):
         self.score_pile = []
 
     def score(self):
-        score = 0
-        for card in self.score_pile:
-            score += card.value
-
-        return score
-
-    def do_turn(self, game):
-        stack = []
-
-        try:
-            events.choose_from_hand(game, stack, include_none=True)
-            events.play_action(game, stack)
-            events.discard(game, stack)
-        except events.NothingPlayedException:
-            pass
-
-        events.collect_noble(game, stack)
-
-        events.draw_action(game, stack)
+        values = [card.value for card in score_pile]
+        return sum(values)
 
     def make_decision(self, game, choices):
-        # implement this in subclasses
+        # implemented in subclasses
         pass
 
 
@@ -56,4 +39,5 @@ class Human(Player):
 class Computer(Player):
     
     def make_decision(self, game, choices):
-        return 0
+        # return 
+        pass
