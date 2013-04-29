@@ -81,13 +81,9 @@ noble_cards = [
         NobleCard('Regent', 4, 'Royal'),
         NobleCard('Baron', 3, 'Royal'),
         NobleCard('Heretic', 2, 'Church'),
-        NobleCard('Wealthy Priest', 1, 'Church'),
         NobleCard('Councilman', 3, 'Civic'),
-        NobleCard('Sheriff', 1, 'Civic'),
         NobleCard('Bishop', 2, 'Church'),
         NobleCard('Piss Boy', 1, 'Royal'),
-        NobleCard('Martyr', -1, 'Negative'),
-        NobleCard('Lieutenant', 2, 'Military'),
         NobleCard('Governor', 4, 'Civic'),
         NobleCard('Hero of the People', -3, 'Negative'),
         NobleCard('Tax Collector', 2, 'Civic'),
@@ -100,11 +96,29 @@ noble_cards = [
         NobleCard('Bad Nun', 3, 'Church'),
         NobleCard('Royal Cartographer', 1, 'Royal'),
         NobleCard('Land Lord', 2, 'Civic')
-] + [
+] + 2 * [
+        NobleCard('Wealthy Priest', 1, 'Church'),
+        NobleCard('Sheriff', 1, 'Civic'),
+        NobleCard('Lieutenant', 2, 'Military')
+] + 3 * [
+        NobleCard('Martyr', -1, 'Negative')
+] + 20 * [
         NobleCard('Filler Noble', 0, 'Negative')
-] * 20
+]
 
 action_cards = [
+        ActionCard('Fainting Spell', 
+                'Move a noble backward up to 3 places in line.', [
+                (events.choose_from_line, {'from_back': 1}),
+                (events.choose_movement, {'distance': -3}),
+                (events.move, {})
+        ]), ActionCard('Was That My Name?', 
+                'Move a noble forward up to 3 places in line.', [
+                (events.choose_from_line, {'from_front': 1}),
+                (events.choose_movement, {'distance': 3}),
+                (events.move, {})
+        ])
+] + 2 * [
         ActionCard('Stumble', 
                 'Move a noble forward exactly 1 place in line.', [
                 (events.choose_from_line, {'from_front': 1}),
@@ -127,17 +141,8 @@ action_cards = [
                 (events.choose_from_line, {'from_front': 1}),
                 (events.choose_movement, {'distance': 2}),
                 (events.move, {})
-        ]), ActionCard('Fainting Spell', 
-                'Move a noble backward up to 3 places in line.', [
-                (events.choose_from_line, {'from_front': 1}),
-                (events.choose_movement, {'distance': -3}),
-                (events.move, {})
-        ]), ActionCard('Was That My Name?', 
-                'Move a noble forward up to 3 places in line.', [
-                (events.choose_from_line, {'from_front': 1}),
-                (events.choose_movement, {'distance': 3}),
-                (events.move, {})
         ])
-] + [
-        ActionCard('Filler Action', 'Placeholder card to fill the deck. No effect.', [])
-] * 20
+] + 50 *[
+        ActionCard('Filler Action', 
+                'Placeholder card to fill the deck. No effect.', [])
+]
