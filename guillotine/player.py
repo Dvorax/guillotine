@@ -21,6 +21,14 @@ class Player(object):
         # implemented in subclasses
         pass
 
+    def copy(self):
+        duplicate = Player(None)
+        duplicate.name = self.name
+        duplicate.hand = list(self.hand)
+        duplicate.score_pile = list(self.score_pile)
+
+        return duplicate
+
     def __eq__(self, other):
         return self.name == other.name
     def __ne__(self, other):
@@ -48,15 +56,26 @@ class Human(Player):
 class Computer(Player):
 
     def __init__(self, name, config=None):
-        super(Computer, self).__init__(name)
+        # avoiding recursion
+        # super(Computer, self).__init__(name)
+        self.name = name
+        self.hand = []
+        self.score_pile = []
         self.config = config
-
+        
     def make_decision(self, game, choices):
         best_option, __ = alpha_beta_search(game, self)
         return best_option
 
+    def copy(self):
+        duplicate = Computer(self.name, self.config)
+        duplicate.hand = list(self.hand)
+        duplicate.score_pile = list(self.score_pile)
 
-class BadComputer(Computer):
+        return duplicate
+
+
+class LazyComputer(Computer):
     
     def make_decision(self, game, choices):
         return -1

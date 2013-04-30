@@ -56,19 +56,27 @@ class NobleCard(Card):
     categories = {'Church': 'blue', 'Military': 'red', 'Royal': 'purple', 
             'Negative': 'gray', 'Civic': 'green'}
 
+    names = {}
+
     def __init__(self, name, value, category, description=None, 
             trigger='collection', event_order=None):
         super(NobleCard, self).__init__(name, description, value, event_order)
         self.category = category
+
+        NobleCard.names[name] = value
 
     def color(self):
         return Noble.categories[self.category]
 
 
 class ActionCard(Card):
+
+    names = []
     
     def __init__(self, name, description, event_order, value=0):
         super(ActionCard, self).__init__(name, description, value, event_order)
+
+        ActionCard.names.append(name)
 
 
 ### List Definitions #########################################################
@@ -106,7 +114,7 @@ noble_cards = [
         NobleCard('Filler Noble', 0, 'Negative')
 ]
 
-action_cards = [
+action_cards = 4 * [
         ActionCard('Fainting Spell', 
                 'Move a noble backward up to 3 places in line.', [
                 (events.choose_from_line, {'from_back': 1}),
@@ -118,7 +126,7 @@ action_cards = [
                 (events.choose_movement, {'distance': 3}),
                 (events.move, {})
         ])
-] + 2 * [
+] + 8 * [
         ActionCard('Stumble', 
                 'Move a noble forward exactly 1 place in line.', [
                 (events.choose_from_line, {'from_front': 1}),
@@ -142,7 +150,7 @@ action_cards = [
                 (events.choose_movement, {'distance': 2}),
                 (events.move, {})
         ])
-] + 50 *[
+] + 12 *[
         ActionCard('Filler Action', 
                 'Placeholder card to fill the deck. No effect.', [])
 ]

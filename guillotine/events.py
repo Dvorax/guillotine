@@ -18,7 +18,7 @@ class Decision(object):
 
     def __init__(self, decider, options, random_outcome=False):
         self.decider = decider
-        self.options = options
+        self.options = list(options)
         self.random_outcome = random_outcome
 
         if len(self.options) == 0:
@@ -35,8 +35,11 @@ class Decision(object):
         game.stack.append(self.options[decision_index])
         game.decision = None
 
-        if not game.ai_deciding:
+        if game.print_statements and not game.ai_deciding:
             print('  {} --> {}'.format(self.decider, game.stack[-1]))
+
+    def copy(self):
+        return Decision(self.decider.copy(), self.options, self.random_outcome)
 
 
 ### Method Definitions #######################################################
@@ -56,12 +59,12 @@ def _string_reference(game, string):
         return string
 
 def choose_player(game, chooser='current'):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('choose player')
 
 def choose_from_hand(game, chooser='current', hand_owner=None, 
         include_none=False):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('choose from hand')
 
     chooser = _string_reference(game, chooser)
@@ -74,12 +77,12 @@ def choose_from_hand(game, chooser='current', hand_owner=None,
     game.decision = Decision(chooser, choices)
 
 def choose_from_discard(game, chooser='current'):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('choose from discard')
 
 def choose_from_line(game, chooser='current', category=None, 
         randomly_select=False, from_front=0, from_back=0):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('choose from line')
 
     if randomly_select:
@@ -103,7 +106,7 @@ def choose_movement(game, chooser='current', distance=None):
     Upto is implied over exact distances, else we would not give a choice
     Card to be moved has already been chosen, only resolves movement
     '''
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('choose movement')
 
     chooser = _string_reference(game, chooser)
@@ -129,7 +132,7 @@ def choose_movement(game, chooser='current', distance=None):
         quit()
 
 def play_action(game):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('play action')
 
     card = game.stack[-1]
@@ -137,14 +140,14 @@ def play_action(game):
         game.insert_events(*card.events)
 
 def collect_noble(game, player='current'):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('collect noble')
 
     player = _string_reference(game, player)
     player.score_pile.append(game.line.pop(0))
 
 def draw_action(game, player='current'):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('draw action')
 
     player = _string_reference(game, player)
@@ -167,7 +170,7 @@ def draw_action(game, player='current'):
 def move(game, distance='stack', position=None):
     # get origin from stack
     # if distance and position undefined, get distance from stack
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('move')
 
     distance = _string_reference(game, distance)
@@ -180,34 +183,34 @@ def move(game, distance='stack', position=None):
         game.line.insert(new_pos, card)
 
 def rearrange_line(game, player='current', first_n=None):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('rearrange line')
 
 def discard(game, location='current hand'):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('discard')
 
     card = game.stack.pop()
     if card != 'No Action':
-        if not game.ai_deciding:
+        if game.print_statements and not game.ai_deciding:
             print('Removed {}'.format(card))
         location = _string_reference(game, location)
         location.remove(card)
         game.discard_pile.append(card)
 
 def assemble_noble_line(game):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('assemble noble line')
 
     random.shuffle(game.noble_deck)
     game.line = game.noble_deck[:STARTING_LINE_SIZE]
     game.noble_deck = game.noble_deck[STARTING_LINE_SIZE:]
 
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print(game.line)
 
 def deal_action_cards(game):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('deal action cards')
 
     random.shuffle(game.action_deck)
@@ -217,7 +220,7 @@ def deal_action_cards(game):
     game.action_deck = game.action_deck[len(game.players)*STARTING_ACTION_CARDS:]
 
 def transition_turns(game):
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print('transition turns')
 
     # rotate players
@@ -241,9 +244,10 @@ def transition_turns(game):
         game.insert_events((assemble_noble_line, {}))
         game.day += 1
 
-    if not game.ai_deciding:
+    if game.print_statements and not game.ai_deciding:
         print(game.turn)
         print(game.line)
+        print(game.current_player.hand)
 
 
 ### List Definitions #########################################################
